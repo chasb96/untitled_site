@@ -1,0 +1,10 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: frontend
+spec:
+  containers:
+  - name: frontend
+    image: frontend
+    ports:
+    - containerPort: 80
