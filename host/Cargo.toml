@@ -8,5 +8,7 @@ edition = "2021"
 [dependencies]
 tokio = { version = "1.36.0", features = ["full"] }
 tower = "0.4.13"
-tower-http = { version = "0.5.2", features = ["fs"] }
+tower-layer = "0.3.2"
 axum = "0.7.4"
+log = "0.4.20"
+env_logger = "0.11.3"
