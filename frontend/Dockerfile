@@ -18,4 +18,6 @@ COPY ./assets/js ./assets/js
 COPY ./assets/css ./assets/css
 COPY ./src ./src
 
+EXPOSE 80
+
 CMD ["trunk", "serve", "--release"]
