@@ -1,0 +1,4 @@
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(256) UNIQUE NOT NULL
+);
