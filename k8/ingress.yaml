@@ -17,13 +17,6 @@ spec:
             name: users-web
             port: 
               number: 80
-      - path: /api/(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: host
-            port: 
-              number: 80
       - path: /(.*)
         pathType: Prefix
         backend:
