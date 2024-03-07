@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-service
+  name: users-web
   labels:
-    app: user-service
+    app: users-web
 spec:
   ports:
   - port: 80
     targetPort: 80
     protocol: TCP
   selector:
-    app: user-service
+    app: users-web

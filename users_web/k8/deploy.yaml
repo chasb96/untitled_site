@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-service
+  name: users-web
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: user-service
+      app: users-web
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -15,11 +15,11 @@ spec:
   template:
     metadata:
       labels:
-        app: user-service
+        app: users-web
     spec:
       containers:
-      - name: user-service
-        image: public.ecr.aws/l4v6k6q7/689289bfd7b0db6b706123cfa0b95825_user_service:latest
+      - name: users-web
+        image: public.ecr.aws/l4v6k6q7/689289bfd7b0db6b706123cfa0b95825_users_web:latest
         ports:
         - containerPort: 80
         env:

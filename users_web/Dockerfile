@@ -7,8 +7,8 @@ RUN go mod download
 
 COPY ./cmd ./cmd
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /user_service ./cmd
+RUN CGO_ENABLED=0 GOOS=linux go build -o /users_web ./cmd
 
 EXPOSE 80
 
-CMD ["/user_service"]
+CMD ["/users_web"]

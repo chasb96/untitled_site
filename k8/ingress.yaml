@@ -14,7 +14,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: user-service
+            name: users-web
             port: 
               number: 80
       - path: /api/(.*)
