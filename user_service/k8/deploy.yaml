@@ -22,3 +22,9 @@ spec:
         image: public.ecr.aws/l4v6k6q7/689289bfd7b0db6b706123cfa0b95825_user_service:latest
         ports:
         - containerPort: 80
+        env:
+        - name: DATABASE_URL
+          valueFrom: 
+            secretKeyRef:
+              name: users-database-connection-string
+              key: database_url
