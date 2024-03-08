@@ -20,5 +20,6 @@ spec:
       containers:
       - name: frontend
         image: public.ecr.aws/l4v6k6q7/0d26b081810df667c5aadb4638255b37_frontend:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80

@@ -20,6 +20,7 @@ spec:
       containers:
       - name: users-web
         image: public.ecr.aws/l4v6k6q7/689289bfd7b0db6b706123cfa0b95825_users_web:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         env:

@@ -1,16 +1,22 @@
 mod nav;
-mod content_pane;
+mod routes;
+mod home;
+mod user;
+mod api_error;
+mod error_pages;
 
 use yew::prelude::*;
 use nav::Nav;
-use content_pane::ContentPane;
+use yew_router::{BrowserRouter, Switch};
+use crate::routes::{route, Route};
 
 #[function_component]
 pub fn App() -> Html {
     html! {
-        <div>
+        <BrowserRouter>
             <Nav></Nav>
-            <ContentPane></ContentPane>
-        </div>
+
+            <Switch<Route> render={route} />
+        </BrowserRouter>
     }
 }
