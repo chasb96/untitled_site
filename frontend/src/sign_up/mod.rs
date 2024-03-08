@@ -22,7 +22,7 @@ pub fn SignUp() -> Html {
     );
 
     html! {
-        <div class="container-md bg-black mt-4 border border-dark rounded">
+        <div class="container-md bg-black mt-4 border border-dark rounded" style="max-width: 35rem;">
             <h2 class="mt-3 ms-3 text-white">{ "Sign Up" }</h2>
             <hr class="border-dark opacity-100" />
 

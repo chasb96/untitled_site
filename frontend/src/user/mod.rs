@@ -1,8 +1,9 @@
 mod api;
 
+use std::sync::RwLock;
 use yew::prelude::*;
 use api::User as ApiUser;
-use yew_router::hooks::use_navigator;
+use yew_router::{hooks::use_navigator, navigator::Navigator};
 use crate::routes::Route;
 
 #[derive(Properties, PartialEq)]
@@ -13,23 +14,23 @@ pub struct Props {
 #[function_component]
 pub fn User(props: &Props) -> Html {
     let navigator = use_navigator().unwrap();
-    let user_state = use_state(|| None);
-    let mut user = ApiUser::default();
+    let state = use_state(|| RwLock::new(None));
     
-    if user_state.is_none() {
-        let username_prop = props.username.clone();
-        let user_state = user_state.clone();
-
-        wasm_bindgen_futures::spawn_local(async move {
-            match ApiUser::find_by_username(&username_prop).await {
-                Ok(Some(user)) => user_state.set(Some(user)),
-                _ => navigator.push(&Route::NotFound),
-            }
-        });
+    if let Ok(guarded_user) = state.read() {
+        if guarded_user.is_none() {
+            defer_assign_state(
+                state.clone(), 
+                &props.username, 
+                navigator
+            )
+        }
     }
 
-    if let Some(user_state) = (*user_state).clone() {
-        user = user_state.clone();
+    let mut user = ApiUser::default();
+    if let Ok(guarded_user) = state.read() {
+        if let Some(state_user) = guarded_user.clone() {
+            user = state_user;
+        }
     }
 
     html! {
@@ -44,4 +45,24 @@ pub fn User(props: &Props) -> Html {
             </div>
         </div>
     }
+}
+
+fn defer_assign_state(
+    state: UseStateHandle<RwLock<Option<ApiUser>>>, 
+    username_prop: &str,
+    navigator: Navigator
+) {
+    let username_prop = username_prop.to_owned();
+
+    wasm_bindgen_futures::spawn_local(async move {
+        let user = match ApiUser::find_by_username(&username_prop).await {
+            Ok(Some(user)) => user,
+            Ok(None) => return navigator.push(&Route::NotFound),
+            Err(_) => return navigator.push(&Route::InternalServerError),
+        };
+
+        if let Ok(mut state_user) = state.write() {
+            *state_user = Some(user);
+        }
+    });
 }
