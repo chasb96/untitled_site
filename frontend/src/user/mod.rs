@@ -3,7 +3,6 @@ mod api;
 use yew::prelude::*;
 use api::User as ApiUser;
 use yew_router::hooks::use_navigator;
-
 use crate::routes::Route;
 
 #[derive(Properties, PartialEq)]

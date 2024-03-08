@@ -16,9 +16,8 @@ impl User {
 
         match res.status() {
             404 => Ok(None),
-            500 => Err(ApiError::InternalServerError),
             200 => Ok(res.json().await?),
-            _ => unreachable!()
+            _ => Err(ApiError::InternalServerError),
         }
     }
 }

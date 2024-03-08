@@ -4,6 +4,7 @@ mod home;
 mod user;
 mod api_error;
 mod error_pages;
+mod sign_up;
 
 use yew::prelude::*;
 use nav::Nav;

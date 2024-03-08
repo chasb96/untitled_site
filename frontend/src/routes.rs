@@ -1,11 +1,13 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
-use crate::{error_pages::{InternalServerError, NotFound}, home::Home, user::User};
+use crate::{error_pages::{InternalServerError, NotFound}, home::Home, sign_up::SignUp, user::User};
 
 #[derive(Clone, Routable, PartialEq)]
 pub enum Route {
     #[at("/")]
     Home,
+    #[at("/sign_up")]
+    SignUp,
     #[at("/:username")]
     User { username: String },
     #[at("/not_found")]
@@ -20,7 +22,8 @@ pub fn route(route: Route) -> Html {
             let username = username[1..].to_string();
 
             html! { <User username={username} /> }
-        }
+        },
+        Route::SignUp => html! { <SignUp /> },
         Route::Home => html! { <Home /> },
         Route::InternalServerError => html! { <InternalServerError /> },
         _ => html! { <NotFound /> },
