@@ -1,4 +1,4 @@
-module github.com/chasb96/untitled_site/user_service
+module users_web
 
 go 1.21.4
 
