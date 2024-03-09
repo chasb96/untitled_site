@@ -1,23 +1,29 @@
-FROM rust AS build
-WORKDIR /src
+FROM rust AS build_host
+WORKDIR /app
 
-RUN rustup target add wasm32-unknown-unknown
-RUN cargo install --locked trunk
-
-RUN USER=root cargo new --bin frontend
-WORKDIR /src/frontend
-
-COPY ./Cargo.toml ./Cargo.toml
+COPY ./host .
 
 RUN cargo build --release
-RUN rm src/*.rs
 
-COPY ./index.html ./index.html
-COPY ./Trunk.toml ./Trunk.toml
-COPY ./assets/js ./assets/js
-COPY ./assets/css ./assets/css
-COPY ./src ./src
+FROM node
+WORKDIR /host
+
+COPY --from=build_host /app/target/release/host ./host
+
+WORKDIR /host/app
+
+RUN npm i -g sass
+
+COPY ./package.json ./
+
+RUN npm i
+
+COPY . .
+
+RUN sass ./src/scss/custom.scss ./src/assets/css/custom.css
+RUN npm run build
 
 EXPOSE 80
 
-CMD ["trunk", "serve", "--release"]
+WORKDIR /host
+CMD [ "./host" ]
