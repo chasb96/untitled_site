@@ -1,6 +1,5 @@
 mod api;
 
-use std::sync::RwLock;
 use yew::prelude::*;
 use api::User as ApiUser;
 use yew_router::{hooks::use_navigator, navigator::Navigator};
@@ -14,24 +13,21 @@ pub struct Props {
 #[function_component]
 pub fn User(props: &Props) -> Html {
     let navigator = use_navigator().unwrap();
-    let state = use_state(|| RwLock::new(None));
+    let state = use_state(|| None);
     
-    if let Ok(guarded_user) = state.read() {
-        if guarded_user.is_none() {
-            defer_assign_state(
-                state.clone(), 
-                &props.username, 
-                navigator
-            )
-        }
+    if state.is_none() {
+        defer_assign_state(
+            state.clone(), 
+            &props.username, 
+            navigator
+        )
     }
 
-    let mut user = ApiUser::default();
-    if let Ok(guarded_user) = state.read() {
-        if let Some(state_user) = guarded_user.clone() {
-            user = state_user;
-        }
-    }
+    
+    let mut username = "";
+    if let Some(user) = &(*state) {
+        username = &user.username;
+    };
 
     html! {
         <div class="container bg-black mt-4 border border-dark rounded">
@@ -40,7 +36,7 @@ pub fn User(props: &Props) -> Html {
                 </div>
 
                 <div class="col-md-9">
-                    <h3 class="text-white">{ user.username }</h3>
+                    <h3 class="text-white mt-2">{ username }</h3>
                 </div>
             </div>
         </div>
@@ -48,21 +44,21 @@ pub fn User(props: &Props) -> Html {
 }
 
 fn defer_assign_state(
-    state: UseStateHandle<RwLock<Option<ApiUser>>>, 
+    state: UseStateHandle<Option<ApiUser>>, 
     username_prop: &str,
     navigator: Navigator
 ) {
     let username_prop = username_prop.to_owned();
-
+    
     wasm_bindgen_futures::spawn_local(async move {
-        let user = match ApiUser::find_by_username(&username_prop).await {
+        let res = ApiUser::find_by_username(&username_prop).await;
+
+        let user = match res {
             Ok(Some(user)) => user,
             Ok(None) => return navigator.push(&Route::NotFound),
             Err(_) => return navigator.push(&Route::InternalServerError),
         };
 
-        if let Ok(mut state_user) = state.write() {
-            *state_user = Some(user);
-        }
+        state.set(Some(user));
     });
 }

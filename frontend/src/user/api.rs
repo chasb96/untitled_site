@@ -1,4 +1,4 @@
-use gloo::net::http::Request;
+use gloo::{console, net::http::Request};
 use serde::Deserialize;
 use crate::api_error::ApiError;
 
@@ -14,9 +14,13 @@ impl User {
             .send()
             .await?;
 
+        
         match res.status() {
+            200 => {
+                console::log!(res.status());
+                Ok(res.json().await?)
+            },
             404 => Ok(None),
-            200 => Ok(res.json().await?),
             _ => Err(ApiError::InternalServerError),
         }
     }

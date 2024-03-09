@@ -9,7 +9,6 @@ func (app *App) Routes() *mux.Router {
 
 	app.Logger.Info("Registering routes")
 	router.HandleFunc("/health", app.health).Methods("GET")
-	router.HandleFunc("/create", app.createUser).Methods("POST")
 	router.HandleFunc("/{username:@[0-9a-zA-Z]+}", app.findByUsername).Methods("GET")
 	router.HandleFunc("/{id}", app.find).Methods("GET")
 

@@ -1,4 +1,4 @@
-use auth::*;
+use auth_web::*;
 
 use std::error::Error;
 use axum::serve;

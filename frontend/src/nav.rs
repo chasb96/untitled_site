@@ -9,6 +9,9 @@ pub fn Nav() -> Html {
             </a>
 
             <div class="float-end me-3  mt-0">
+                <a href="/login" class="me-2">
+                    <button class="btn btn-secondary">{ "Login" }</button>
+                </a>
                 <a href="/sign_up">
                     <button class="btn btn-primary">{ "Sign Up" }</button>
                 </a>

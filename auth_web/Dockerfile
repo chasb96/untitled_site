@@ -1,8 +1,8 @@
 FROM rust AS build_host
 WORKDIR /src
 
-RUN USER=root cargo new --bin auth
-WORKDIR /src/auth
+RUN USER=root cargo new --bin auth_web
+WORKDIR /src/auth_web
 
 COPY ./Cargo.lock ./Cargo.lock
 COPY ./Cargo.toml ./Cargo.toml
@@ -12,7 +12,7 @@ RUN rm src/*.rs
 
 COPY ./src ./src
 
-RUN rm ./target/release/deps/auth*
+RUN rm ./target/release/deps/auth_web*
 RUN cargo build --release
 
 WORKDIR /src
@@ -26,6 +26,6 @@ HEALTHCHECK CMD curl --fail http://localhost/health || exit 1
 
 WORKDIR /src
 
-COPY --from=build_host /src/auth/target/release/auth ./auth
+COPY --from=build_host /src/auth_web/target/release/auth_web ./auth_web
 
-CMD ["./auth"]
+CMD ["./auth_web"]

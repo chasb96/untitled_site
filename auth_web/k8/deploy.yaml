@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth
+  name: auth-web
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: auth
+      app: auth-web
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -15,11 +15,11 @@ spec:
   template:
     metadata:
       labels:
-        app: auth
+        app: auth-web
     spec:
       containers:
-      - name: auth
-        image: public.ecr.aws/l4v6k6q7/d59985bd7579cc56b43532c0c04135b1_auth:latest
+      - name: auth-web
+        image: public.ecr.aws/l4v6k6q7/d59985bd7579cc56b43532c0c04135b1_auth_web:latest
         ports:
         - containerPort: 80
         env:
@@ -28,3 +28,8 @@ spec:
             secretKeyRef:
               name: users-database-connection-string
               key: database_url
+        - name: HMAC_KEY
+          valueFrom: 
+            secretKeyRef:
+              name: auth-hmac-key
+              key: hmac_key

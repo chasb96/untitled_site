@@ -19,7 +19,7 @@ func main() {
 
 	app.Logger.Info("Binding to 0.0.0.0:80")
 	host := &http.Server{
-		Addr:    "0.0.0.0:8080",
+		Addr:    "0.0.0.0:80",
 		Handler: app.Routes(),
 	}
 

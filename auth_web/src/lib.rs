@@ -6,5 +6,6 @@ mod repository;
 mod axum;
 mod hash;
 mod util;
+mod jwt;
 
 pub use routes::routes;

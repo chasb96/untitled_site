@@ -9,13 +9,13 @@ pub struct User {
 }
 
 #[derive(Deserialize)]
-struct CreateUserResponse {
-    id: i32,
+struct AuthenticateResponse {
+    token: String,
 }
 
 impl User {
-    pub async fn create_user(username: &str, password: &str) -> Result<i32, ApiError> {
-        let res = Request::post("/api/sign_up")
+    pub async fn authenticate(username: &str, password: &str) -> Result<String, ApiError> {
+        let res = Request::post("/api/authenticate")
             .json(
                 &User {
                     username: username.to_string(),
@@ -26,7 +26,7 @@ impl User {
             .await?;
 
         match res.status() {
-            200 => Ok(res.json::<CreateUserResponse>().await?.id),
+            200 => Ok(res.json::<AuthenticateResponse>().await?.token),
             _ => Err(ApiError::InternalServerError),
         }
     }
