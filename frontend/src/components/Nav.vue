@@ -1,6 +1,21 @@
 <script>
+import AuthService from '../auth';
+
 export default {
-  name: 'Nav'
+  name: 'Nav',
+  data() {
+    let auth_service = new AuthService();
+
+    return {
+        auth_service: auth_service,
+        logged_in: auth_service.isAuthenticated(),
+    }
+  },
+  mounted() {
+    window.addEventListener('token-change', (_) => {
+        this.logged_in = this.auth_service.isAuthenticated();
+    });
+  }
 }
 </script>
 
@@ -10,7 +25,7 @@ export default {
             site.com
         </a>
 
-        <div class="float-end me-3  mt-0">
+        <div v-if="!this.logged_in" class="float-end me-3  mt-0">
             <a href="/login" class="me-2">
                 <button class="btn btn-secondary">Login</button>
             </a>

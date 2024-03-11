@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import AuthService from '../auth';
+
 export default {
     name: 'Login',
     data() {
@@ -46,6 +48,7 @@ export default {
             username: '',
             password: '',
             show_invalid_credentials: false,
+            auth_service: new AuthService(),
         }
     },
     methods: {
@@ -64,9 +67,16 @@ export default {
             let response = await fetch('/api/authenticate', request);
 
             switch (response.status) {
-                case 200: this.$router.push('/@' + this.username); break;
                 case 401: this.show_invalid_credentials = true; break;
-                case 500: this.$router.push('/internal_server_error');
+                case 500: this.$router.push('/internal_server_error'); break;
+                case 200: {
+                    let response_body = await response.json();
+                    let token = response_body.token;
+
+                    this.auth_service.setToken(token);
+
+                    this.$router.push('/@' + this.username); 
+                }
             };
         }
     }
