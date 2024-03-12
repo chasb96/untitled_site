@@ -70,3 +70,41 @@ func (db *Database) CreateProject(request *CreateProjectRequest) (int, error) {
 
 	return id, nil
 }
+
+func (db *Database) ListByUser(userId int) ([]Project, error) {
+	const LIST_BY_USER_QUERY = `
+		SELECT
+			id,
+			name
+		FROM
+			projects
+		WHERE
+			user_id = $1
+	`
+
+	var projects []Project
+
+	rows, err := db.pool.Query(context.Background(), LIST_BY_USER_QUERY, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var id int
+		var name string
+
+		err := rows.Scan(&id, &name)
+		if err != nil {
+			return nil, err
+		}
+
+		project := Project{
+			Id:   id,
+			Name: name,
+		}
+
+		projects = append(projects, project)
+	}
+
+	return projects, nil
+}
