@@ -4,7 +4,7 @@ mod claims_user;
 pub use claims_user::ClaimsUser;
 
 use std::{fmt::{Display, Debug}, error::Error};
-use jwt::{Header, Token, SignWithKey, Claims, AlgorithmType};
+use jwt::{Header, Token, Claims, VerifyWithKey};
 use hmac::{get_hmac_hasher, InvalidKeyError};
 
 #[derive(Debug)]
@@ -36,45 +36,51 @@ impl From<jwt::Error> for GenerateJwtError {
     }
 }
 
-pub fn generate_jwt(content: impl Into<Claims>) -> Result<String, GenerateJwtError> {
-    let key = get_hmac_hasher()?;
-
-    let header = Header {
-        algorithm: AlgorithmType::Hs256,
-        ..Default::default()
-    };
-
-    Token::new(header, content.into())
-        .sign_with_key(&key)
-        .map(|ok| ok.as_str().to_string())
-        .map_err(GenerateJwtError::from)
-}
-
 #[derive(Debug)]
-pub enum ValidateJwtError {
+pub enum ValidateJwtError<T> {
     HmacKey(InvalidKeyError),
     Verify(jwt::Error),
+    Claims(T),
 }
 
-impl Error for ValidateJwtError { }
+impl<T: Display + Debug> Error for ValidateJwtError<T> { }
 
-impl Display for ValidateJwtError {
+impl<T: Display> Display for ValidateJwtError<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             ValidateJwtError::HmacKey(e) => Display::fmt(e, f),
             ValidateJwtError::Verify(e) => Display::fmt(e, f),
+            ValidateJwtError::Claims(e) => e.fmt(f),
         }
     }
 }
 
-impl From<InvalidKeyError> for ValidateJwtError {
+impl<T> From<InvalidKeyError> for ValidateJwtError<T> {
     fn from(value: InvalidKeyError) -> Self {
         Self::HmacKey(value)
     }
 }
 
-impl From<jwt::Error> for ValidateJwtError {
+impl<T> From<jwt::Error> for ValidateJwtError<T> {
     fn from(value: jwt::Error) -> Self {
         Self::Verify(value)
     }
+}
+
+pub fn verify_jwt<'a, T>(jwt: String) -> Result<T, ValidateJwtError<T::Error>> 
+where
+    T: TryFrom<Claims>
+{
+    let key = get_hmac_hasher()?;
+
+    let token: Token<Header, Claims, _> = 
+        jwt.verify_with_key(&key)?;
+
+    Ok(
+        token
+            .claims()
+            .clone()
+            .try_into()
+            .map_err(|e| ValidateJwtError::Claims(e))?
+    )
 }

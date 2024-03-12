@@ -42,3 +42,31 @@ func (db *Database) FindProject(id int) (*Project, error) {
 
 	return &project, nil
 }
+
+type CreateProjectRequest struct {
+	UserId      int
+	ProjectName string
+}
+
+func (db *Database) CreateProject(request *CreateProjectRequest) (int, error) {
+	const CREATE_PROJECT_QUERY = `
+		INSERT INTO projects
+			(name, user_id)
+		VALUES
+			($1, $2)
+		RETURNING
+			id
+	`
+
+	var id int
+
+	err := db.pool.
+		QueryRow(context.Background(), CREATE_PROJECT_QUERY, request.ProjectName, request.UserId).
+		Scan(&id)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
+}
