@@ -2,14 +2,14 @@ package web
 
 import "github.com/gorilla/mux"
 
-func (app *App) Routes() *mux.Router {
+func (server *Server) Routes() *mux.Router {
 	router := mux.NewRouter()
 
-	app.Logger.Info("Registering routes")
-	router.HandleFunc("/health", app.health).Methods("GET")
-	router.HandleFunc("/user/{user_id}", loggerMiddleware(app.Logger, app.listByUser)).Methods("GET")
-	router.HandleFunc("/{id}", loggerMiddleware(app.Logger, app.findProject)).Methods("GET")
-	router.HandleFunc("/", loggerMiddleware(app.Logger, authMiddleware(app.Logger, app.createProject))).Methods("POST")
+	server.Logger.Info("Registering routes")
+	router.HandleFunc("/health", server.health).Methods("GET")
+	router.HandleFunc("/user/{user_id}", loggerMiddleware(server.Logger, server.listByUser)).Methods("GET")
+	router.HandleFunc("/{id}", loggerMiddleware(server.Logger, server.findProject)).Methods("GET")
+	router.HandleFunc("/", loggerMiddleware(server.Logger, authMiddleware(server.Logger, server.createProject))).Methods("POST")
 
 	return router
 }

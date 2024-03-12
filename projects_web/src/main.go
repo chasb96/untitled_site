@@ -18,20 +18,20 @@ func main() {
 	db := repository.NewDatabase()
 	defer db.Close()
 
-	app := web.App{
+	server := web.Server{
 		Logger:   slog.Default(),
 		Database: db,
 	}
 
-	app.Logger.Info("Binding to " + bind)
+	server.Logger.Info("Binding to " + bind)
 	host := &http.Server{
 		Addr:    bind,
-		Handler: app.Routes(),
+		Handler: server.Routes(),
 	}
 
-	app.Logger.Info("Serving on " + bind)
+	server.Logger.Info("Serving on " + bind)
 	if err := host.ListenAndServe(); err != nil {
-		app.Logger.Error("Failed to serve on " + bind)
-		app.Logger.Error(err.Error())
+		server.Logger.Error("Failed to serve on " + bind)
+		server.Logger.Error(err.Error())
 	}
 }

@@ -14,7 +14,7 @@ type CreateProjectResponse struct {
 	Id int `json:"id"`
 }
 
-func (app *App) createProject(w http.ResponseWriter, r *http.Request, user *AuthenticatedUser) {
+func (server *Server) createProject(w http.ResponseWriter, r *http.Request, user *AuthenticatedUser) {
 	var requestBody CreateProjectRequest
 	err := json.NewDecoder(r.Body).Decode(&requestBody)
 	if err != nil {
@@ -27,9 +27,9 @@ func (app *App) createProject(w http.ResponseWriter, r *http.Request, user *Auth
 		ProjectName: requestBody.Name,
 	}
 
-	projectId, err := app.Database.CreateProject(&createProjectRequest)
+	projectId, err := server.Database.CreateProject(&createProjectRequest)
 	if err != nil {
-		app.Logger.Error(err.Error())
+		server.Logger.Error(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -40,7 +40,7 @@ func (app *App) createProject(w http.ResponseWriter, r *http.Request, user *Auth
 
 	responseBodySerialized, err := json.Marshal(responseBody)
 	if err != nil {
-		app.Logger.Error(err.Error())
+		server.Logger.Error(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

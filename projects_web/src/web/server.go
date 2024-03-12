@@ -5,13 +5,13 @@ import (
 	"projects_web/src/repository"
 )
 
-type App struct {
+type Server struct {
 	Logger   *slog.Logger
 	Database *repository.Database
 }
 
-func NewApp(logger *slog.Logger, db *repository.Database) *App {
-	return &App{
+func NewApp(logger *slog.Logger, db *repository.Database) *Server {
+	return &Server{
 		Logger:   logger,
 		Database: db,
 	}

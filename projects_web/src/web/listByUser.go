@@ -17,7 +17,7 @@ type ListByUserResponseItem struct {
 	Name string `json:"name"`
 }
 
-func (app *App) listByUser(w http.ResponseWriter, r *http.Request) {
+func (server *Server) listByUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	userId, err := strconv.Atoi(vars["user_id"])
@@ -26,9 +26,9 @@ func (app *App) listByUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	projects, err := app.Database.ListByUser(userId)
+	projects, err := server.Database.ListByUser(userId)
 	if err != nil {
-		app.Logger.Error(err.Error())
+		server.Logger.Error(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -49,7 +49,7 @@ func (app *App) listByUser(w http.ResponseWriter, r *http.Request) {
 
 	body, err := json.Marshal(response)
 	if err != nil {
-		app.Logger.Error(err.Error())
+		server.Logger.Error(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

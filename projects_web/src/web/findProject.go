@@ -13,7 +13,7 @@ type FindProjectResponse struct {
 	Name string `json:"name"`
 }
 
-func (app *App) findProject(w http.ResponseWriter, r *http.Request) {
+func (server *Server) findProject(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	id, err := strconv.Atoi(vars["id"])
@@ -22,9 +22,9 @@ func (app *App) findProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	project, err := app.Database.FindProject(id)
+	project, err := server.Database.FindProject(id)
 	if err != nil {
-		app.Logger.Error(err.Error())
+		server.Logger.Error(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -41,7 +41,7 @@ func (app *App) findProject(w http.ResponseWriter, r *http.Request) {
 
 	body_stringified, err := json.Marshal(body)
 	if err != nil {
-		app.Logger.Error(err.Error())
+		server.Logger.Error(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
