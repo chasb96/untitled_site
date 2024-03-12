@@ -24,6 +24,13 @@ spec:
             name: auth-web
             port:
               number: 80
+      - path: /api/projects/(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: projects-web
+            port: 
+              number: 80
       - path: /api/users/(.*)
         pathType: Prefix
         backend:

@@ -1,0 +1,4 @@
+CREATE TABLE projects (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(256) UNIQUE NOT NULL
+);
