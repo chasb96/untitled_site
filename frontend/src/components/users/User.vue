@@ -3,14 +3,24 @@ export default {
     name: 'User',
     data () {
         return {
-            username: ''
+            userId: 0,
+            username: '',
+            projects: [],
         }
     },
     async mounted () {
-        let response = await fetch("/api/users/@" + this.$route.params.username);
-        let response_body = await response.json();
+        let getUserResponse = await fetch("/api/users/@" + this.$route.params.username);
+        let getUserResponseBody = await getUserResponse.json();
 
-        this.username = response_body.username;
+        this.username = getUserResponseBody.username;
+        this.userId =getUserResponseBody.id;
+
+        let getProjectsResponse = await fetch("/api/projects/users/" + this.userId);
+        let getProjectsResponseBody = await getProjectsResponse.json();
+
+        this.projects = getProjectsResponseBody.projects;
+
+        console.log(this.projects)
     }
 }
 </script>
@@ -22,7 +32,19 @@ export default {
             </div>
 
             <div class="col-md-9">
-                <h3 class="text-white mt-2">{{ username }}</h3>
+                <h3 class="text-white mt-2 ms-3">{{ username }}</h3>
+
+                <div class="container-fluid border-top border-dark">
+                    <div class="row">
+                        <div v-for="(project, i) in projects" class="col-md-4">
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h5 class="text-white mt-2">{{ project.name }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
