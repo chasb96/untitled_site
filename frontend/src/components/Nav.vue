@@ -21,11 +21,11 @@ export default {
 
 <template>
     <nav class="navbar bg-black border-bottom border-dark">
-        <a class="navbar-brand fs-1 text-primary fst-italic text-decoration-none mb-0 pt-0 pb-0 ms-3" href="#">
+        <a class="navbar-brand fs-1 text-primary fst-italic text-decoration-none mb-0 pt-0 pb-0 ms-3" href="/">
             site.com
         </a>
 
-        <div v-if="!this.logged_in" class="float-end me-3  mt-0">
+        <div v-if="!this.logged_in" class="float-end me-3 mt-0">
             <a href="/login" class="me-2">
                 <button class="btn btn-secondary">Login</button>
             </a>

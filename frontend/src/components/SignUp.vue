@@ -35,7 +35,7 @@
             <hr class="border-dark opacity-100 mt-4" />
 
             <div class="float-end me-3">
-                <button type="button" class="btn btn-primary" @click="submit">Submit</button>
+                <button type="button" class="btn btn-primary" @click.prevent="submit">Submit</button>
             </div>
             <div class="clearfix mb-3"></div>
         </form>

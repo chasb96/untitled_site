@@ -5,6 +5,8 @@ import InternalServerError from '../components/error_pages/InternalServerError.v
 import User from '../components/users/User.vue'
 import SignUp from '../components/SignUp.vue'
 import Login from '../components/Login.vue'
+import CreateProject from '../components/projects/CreateProject.vue'
+import Project from '../components/projects/Project.vue'
 
 Vue.use(Router)
 
@@ -14,6 +16,8 @@ export default new Router({
     { path: '/sign_up', component: SignUp },
     { path: '/login', component: Login },
     { path: '/@:username', component: User },
+    { path: '/projects/create', component: CreateProject },
+    { path: '/projects/:id', component: Project },
     { path: '/internal_server_error', component: InternalServerError },
     { path: '*', component: NotFound }
   ]
