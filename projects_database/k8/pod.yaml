@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name:  projects-migrate
+spec:
+  containers:
+  - name: projects-migrate
+    image: public.ecr.aws/l4v6k6q7/7b1a10ee2186b7f5ee795dcfeae72f57_projects_migrations:latest
+    env:
+    - name: DATABASE_URL
+      valueFrom: 
+        secretKeyRef:
+          name: projects-database-connection-string
+          key: database_url
+  restartPolicy: Never
