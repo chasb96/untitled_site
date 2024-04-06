@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: public.ecr.aws/l4v6k6q7/0bf0de84c3c818462fb872e32cd1471e_auth:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: AUTH_DATABASE_URL
+          valueFrom: 
+            secretKeyRef:
+              name: users-database-connection-string
+              key: database_url
+        - name: JWT_HMAC_KEY
+          valueFrom: 
+            secretKeyRef:
+              name: api-hmac-key
+              key: hmac_key
+        - name: PROJECTS_DATABASE_URL
+          valueFrom: 
+            secretKeyRef:
+              name: projects-database-connection-string
+              key: database_url
+        - name: USERS_DATABASE_URL
+          valueFrom: 
+            secretKeyRef:
+              name: users-database-connection-string
+              key: database_url

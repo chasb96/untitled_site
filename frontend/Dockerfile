@@ -23,6 +23,9 @@ COPY . .
 RUN sass ./src/scss/custom.scss ./src/assets/css/custom.css
 RUN npm run build
 
+RUN chmod 777 /host/app/dist
+RUN chmod 777 /host/app/dist/*
+
 EXPOSE 80
 
 WORKDIR /host
