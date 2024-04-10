@@ -43,3 +43,9 @@ spec:
             secretKeyRef:
               name: users-database-connection-string
               key: database_url
+        - name: FILES_DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: files-database-connection-string
+              key: database_url
+        

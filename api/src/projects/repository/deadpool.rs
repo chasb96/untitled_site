@@ -1,4 +1,3 @@
-use axum::async_trait;
 use deadpool::managed::{Manager, RecycleResult, Metrics};
 use sqlx::{PgConnection, Error, Connection};
 
@@ -6,7 +5,6 @@ pub struct ConnectionManager {
     pub connection_string: String
 }
 
-#[async_trait]
 impl Manager for ConnectionManager {
     type Type = PgConnection;
     type Error = Error;

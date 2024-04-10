@@ -1,5 +1,5 @@
 use axum::{routing::get, Router};
-use crate::{auth::AuthRouter, axum::layers::LogLayer, health::health, projects::ProjectsRouter, users::UsersRouter};
+use crate::{auth::AuthRouter, axum::layers::LogLayer, files::FilesRouter, health::health, projects::ProjectsRouter, users::UsersRouter};
 
 trait ApiRouter {
     fn register_api_routes(self) -> Self;
@@ -24,5 +24,6 @@ pub fn create_api_router() -> Router {
         .register_auth_routes()
         .register_projects_routes()
         .register_user_routes()
+        .register_files_routes()
         .register_api_layers()
 }
