@@ -1,4 +1,5 @@
 use axum::{extract::{Multipart, Request}, http::{header::CONTENT_TYPE, StatusCode}, response::{IntoResponse, Response}, Json, RequestExt};
+use file_format::FileFormat;
 use rand::distributions::{Alphanumeric, DistString};
 use crate::{axum::extractors::authenticate::AuthenticateExtractor, files::{axum::extractors::{metadata_repository::MetadataRepositoryExtractor, persistor::PersistorExtractor}, web::response::MetadataResponse}, util::or_status_code::{OrBadRequest, OrInternalServerError}};
 use super::{request::ListMetadataRequest, response::{CreateFileResponse, ListMetadataResponse}};
@@ -56,6 +57,17 @@ pub async fn create_file<'a>(
         let name = field.name().or_bad_request()?.to_string();
         let bytes = field.bytes().await.or_bad_request()?;
 
+        let file_format = FileFormat::from_bytes(&bytes);
+
+        let mime = match &file_format {
+            FileFormat::StereolithographyAscii |
+            FileFormat::PortableNetworkGraphics |
+            FileFormat::PlainText |
+            FileFormat::PortableDocumentFormat |
+            FileFormat::JointPhotographicExpertsGroup => file_format.media_type(),
+            _ => return Err(StatusCode::BAD_REQUEST),
+        };
+
         let id = Alphanumeric.sample_string(&mut rand::thread_rng(), 16);
         let key = Alphanumeric.sample_string(&mut rand::thread_rng(), 16);
 
@@ -65,7 +77,7 @@ pub async fn create_file<'a>(
             .or_internal_server_error()?;
 
         metadata_repository
-            .create(&id, &key, user.id, &name)
+            .create(&id, &key, user.id, &name, mime)
             .await
             .or_internal_server_error()?;
 

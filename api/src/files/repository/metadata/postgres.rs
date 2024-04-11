@@ -4,10 +4,10 @@ use crate::files::repository::postgres::PostgresDatabase;
 use super::{error::ListError, Metadata, MetadataRepository};
 
 impl MetadataRepository for PostgresDatabase {
-    async fn create(&self, id: &str, key: &str, user_id: i32, name: &str) -> Result<String, super::error::CreateError> {
+    async fn create(&self, id: &str, key: &str, user_id: i32, name: &str, mime: &str) -> Result<String, super::error::CreateError> {
         const INSERT_QUERY: &'static str = r#"
-            INSERT INTO metadata (id, key, user_id, name)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO metadata (id, key, user_id, name, mime)
+            VALUES ($1, $2, $3, $4, $5)
             RETURNING id
         "#;
 
@@ -20,6 +20,7 @@ impl MetadataRepository for PostgresDatabase {
             .bind(key)
             .bind(user_id)
             .bind(name)
+            .bind(mime)
             .map(|row: PgRow| row.get("id"))
             .fetch_one(conn.as_mut())
             .await
@@ -32,7 +33,8 @@ impl MetadataRepository for PostgresDatabase {
                 id,
                 key,
                 user_id,
-                name
+                name,
+                mime
             FROM
                 metadata
             WHERE
