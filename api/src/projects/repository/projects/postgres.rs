@@ -51,7 +51,7 @@ impl ProjectsRepository for PostgresDatabase {
             .map_err(Into::into)
     }
     
-    async fn list(&self, user_id: Option<i32>) -> Result<Vec<Project>, ListError> {
+    async fn list(&self, user_id: i32) -> Result<Vec<Project>, ListError> {
         const LIST_QUERY: &'static str = r#"
             SELECT
                 id,

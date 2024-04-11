@@ -48,7 +48,7 @@ pub async fn get_project_by_id(
 
 #[derive(Deserialize)]
 pub struct ListProjectsQuery {
-    user_id: Option<i32>,
+    user_id: i32,
 }
 
 pub async fn list_projects(

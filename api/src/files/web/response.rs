@@ -4,3 +4,14 @@ use serde::Serialize;
 pub struct CreateFileResponse {
     pub ids: Vec<String>,
 }
+
+#[derive(Serialize)]
+pub struct MetadataResponse {
+    pub name: String,
+    pub user_id: i32,
+}
+
+#[derive(Serialize)]
+pub struct ListMetadataResponse {
+    pub files: Vec<MetadataResponse>,
+}

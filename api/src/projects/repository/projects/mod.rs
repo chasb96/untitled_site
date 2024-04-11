@@ -27,7 +27,7 @@ pub trait ProjectsRepository {
 
     async fn get_by_id(&self, id: String) -> Result<Option<Project>, GetByIdError>;
 
-    async fn list(&self, user_id: Option<i32>) -> Result<Vec<Project>, ListError>;
+    async fn list(&self, user_id: i32) -> Result<Vec<Project>, ListError>;
 }
 
 pub enum ProjectsRepositoryOption {
@@ -47,7 +47,7 @@ impl ProjectsRepository for ProjectsRepositoryOption {
         }
     }
     
-    async fn list(&self, user_id: Option<i32>) -> Result<Vec<Project>, ListError> {
+    async fn list(&self, user_id: i32) -> Result<Vec<Project>, ListError> {
         match self {
             Self::Postgres(pg) => pg.list(user_id).await
         }

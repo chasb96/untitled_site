@@ -1,7 +1,7 @@
 use sqlx::Row;
 use sqlx::postgres::PgRow;
 use crate::files::repository::postgres::PostgresDatabase;
-use super::MetadataRepository;
+use super::{error::ListError, Metadata, MetadataRepository};
 
 impl MetadataRepository for PostgresDatabase {
     async fn create(&self, id: &str, key: &str, user_id: i32, name: &str) -> Result<String, super::error::CreateError> {
@@ -22,6 +22,31 @@ impl MetadataRepository for PostgresDatabase {
             .bind(name)
             .map(|row: PgRow| row.get("id"))
             .fetch_one(conn.as_mut())
+            .await
+            .map_err(Into::into)
+    }
+    
+    async fn list(&self, keys: Vec<String>) -> Result<Vec<Metadata>, ListError> {
+        const LIST_QUERY: &'static str = r#"
+            SELECT
+                id,
+                key,
+                user_id,
+                name
+            FROM
+                metadata
+            WHERE
+                key IN ($1)
+        "#;
+
+        let mut conn = self.connection_pool
+            .get()
+            .await?;
+
+        sqlx::query(LIST_QUERY)
+            .bind(keys)
+            .map(Into::into)
+            .fetch_all(conn.as_mut())
             .await
             .map_err(Into::into)
     }
