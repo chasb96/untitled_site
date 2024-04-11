@@ -58,15 +58,16 @@ pub async fn create_file<'a>(
         let bytes = field.bytes().await.or_bad_request()?;
 
         let file_format = FileFormat::from_bytes(&bytes);
-
-        let mime = match &file_format {
+        
+        if !matches!(file_format,
             FileFormat::StereolithographyAscii |
             FileFormat::PortableNetworkGraphics |
             FileFormat::PlainText |
             FileFormat::PortableDocumentFormat |
-            FileFormat::JointPhotographicExpertsGroup => file_format.media_type(),
-            _ => return Err(StatusCode::BAD_REQUEST),
-        };
+            FileFormat::JointPhotographicExpertsGroup
+        ) {
+            return Err(StatusCode::BAD_REQUEST);
+        }
 
         let id = Alphanumeric.sample_string(&mut rand::thread_rng(), 16);
         let key = Alphanumeric.sample_string(&mut rand::thread_rng(), 16);
@@ -77,7 +78,7 @@ pub async fn create_file<'a>(
             .or_internal_server_error()?;
 
         metadata_repository
-            .create(&id, &key, user.id, &name, mime)
+            .create(&id, &key, user.id, &name, file_format.media_type())
             .await
             .or_internal_server_error()?;
 
