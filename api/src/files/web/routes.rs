@@ -1,4 +1,4 @@
-use axum::{extract::{Multipart, Request}, http::{header::CONTENT_TYPE, StatusCode}, response::{IntoResponse, Response}, Json, RequestExt};
+use axum::{extract::{Multipart, Request}, http::{header::CONTENT_TYPE, StatusCode}, response::IntoResponse, Json, RequestExt};
 use file_format::FileFormat;
 use rand::distributions::{Alphanumeric, DistString};
 use crate::{axum::extractors::authenticate::AuthenticateExtractor, files::{axum::extractors::{metadata_repository::MetadataRepositoryExtractor, persistor::PersistorExtractor}, web::response::MetadataResponse}, util::or_status_code::{OrBadRequest, OrInternalServerError}};
@@ -11,7 +11,7 @@ pub async fn post_files<'a>(
     persistor: PersistorExtractor<'a>,
     metadata_repository: MetadataRepositoryExtractor,
     request: Request
-) -> Result<Response, StatusCode> {
+) -> impl IntoResponse {
     let content_type = request
         .headers()
         .get(CONTENT_TYPE)
