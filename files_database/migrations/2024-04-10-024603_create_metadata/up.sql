@@ -2,5 +2,6 @@ CREATE TABLE metadata (
     id VARCHAR(16) UNIQUE PRIMARY KEY,
     key VARCHAR(16) UNIQUE NOT NULL,
     user_id INT NOT NULL,
+    mime VARCHAR(128) NOT NULL,
     name VARCHAR(64) NOT NULL
 );

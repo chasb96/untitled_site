@@ -1,9 +1,11 @@
-use crate::projects::repository::postgres::PostgresDatabase;
-use super::error::{CreateError, GetByIdError, ListError};
-use super::{Project, ProjectsRepository};
 use futures::TryStreamExt;
 use sqlx::Row;
 use sqlx::postgres::PgRow;
+
+use crate::projects::repository::postgres::PostgresDatabase;
+
+use super::error::{CreateError, GetByIdError, ListError};
+use super::{Project, ProjectsRepository};
 
 impl ProjectsRepository for PostgresDatabase {
     async fn create(&self, id: &str, name: &str, user_id: i32) -> Result<String, CreateError> {
@@ -27,7 +29,7 @@ impl ProjectsRepository for PostgresDatabase {
             .map_err(Into::into)
     }
     
-    async fn get_by_id(&self, id: String) -> Result<Option<Project>, GetByIdError> {
+    async fn get_by_id(&self, id: &str) -> Result<Option<Project>, GetByIdError> {
         const GET_BY_ID_QUERY: &'static str = r#"
             SELECT
                 id,
@@ -60,7 +62,7 @@ impl ProjectsRepository for PostgresDatabase {
             FROM
                 projects
             WHERE
-                ($1 IS NULL OR user_id = $1)
+                user_id = $1
         "#;
 
         let mut conn = self.connection_pool

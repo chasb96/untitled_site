@@ -25,7 +25,7 @@ impl From<PgRow> for Project {
 pub trait ProjectsRepository {
     async fn create(&self, id: &str, name: &str, user_id: i32) -> Result<String, CreateError>;
 
-    async fn get_by_id(&self, id: String) -> Result<Option<Project>, GetByIdError>;
+    async fn get_by_id(&self, id: &str) -> Result<Option<Project>, GetByIdError>;
 
     async fn list(&self, user_id: i32) -> Result<Vec<Project>, ListError>;
 }
@@ -41,7 +41,7 @@ impl ProjectsRepository for ProjectsRepositoryOption {
         }
     }
     
-    async fn get_by_id(&self, id: String) -> Result<Option<Project>, GetByIdError> {
+    async fn get_by_id(&self, id: &str) -> Result<Option<Project>, GetByIdError> {
         match self {
             Self::Postgres(pg) => pg.get_by_id(id).await
         }
