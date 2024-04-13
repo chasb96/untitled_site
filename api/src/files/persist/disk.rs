@@ -1,6 +1,6 @@
-use std::{fs::File, io::Write};
-
-use super::Persistor;
+use std::{fs::File, io::{Read, Write}};
+use bytes::Bytes;
+use super::{error::ReadError, Persistor};
 
 pub struct DiskDrive<'a> {
     root: &'a String,
@@ -15,11 +15,21 @@ impl<'a> DiskDrive<'a> {
 }
 
 impl<'a> Persistor for DiskDrive<'a> {
-    async fn persist(&self, key: &str, bytes: axum::body::Bytes) -> Result<(), super::error::PersistError> {
+    async fn persist(&self, key: &str, bytes: Bytes) -> Result<(), super::error::PersistError> {
         let mut file = File::open(format!("{}/{}", self.root, key))?;
 
         file.write_all(&bytes)?;
 
         Ok(())
+    }
+    
+    async fn read(&self, key: &str) -> Result<Bytes, ReadError> {
+        let mut file = File::open(format!("{}/{}", self.root, key))?;
+
+        let mut buf = Vec::new();
+
+        file.read_to_end(&mut buf)?;
+
+        Ok(Bytes::from(buf))
     }
 }

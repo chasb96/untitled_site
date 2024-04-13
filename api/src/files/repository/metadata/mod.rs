@@ -3,7 +3,7 @@ mod postgres;
 
 use sqlx::Row;
 use sqlx::postgres::PgRow;
-use self::error::{CreateError, ListError};
+use self::error::{CreateError, GetByIdError, ListError};
 use super::postgres::PostgresDatabase;
 
 pub struct Metadata {
@@ -30,6 +30,8 @@ pub trait MetadataRepository {
     async fn create(&self, id: &str, key: &str, user_id: i32, name: &str, mime: &str) -> Result<String, CreateError>;
 
     async fn list(&self, keys: Vec<String>) -> Result<Vec<Metadata>, ListError>;
+
+    async fn get_by_id(&self, id: &str) -> Result<Option<Metadata>, GetByIdError>;
 }
 
 pub enum MetadataRepositoryOption {
@@ -46,6 +48,12 @@ impl MetadataRepository for MetadataRepositoryOption {
     async fn list(&self, keys: Vec<String>) -> Result<Vec<Metadata>, ListError> {
         match self {
             Self::Postgres(pg) => pg.list(keys).await
+        }
+    }
+    
+    async fn get_by_id(&self, id: &str) -> Result<Option<Metadata>, GetByIdError> {
+        match self {
+            Self::Postgres(pg) => pg.get_by_id(id).await
         }
     }
 }

@@ -59,3 +59,32 @@ impl From<SqlxError> for ListError {
         ListError::Sqlx(value)
     }
 }
+
+#[derive(Debug)]
+pub enum GetByIdError {
+    Sqlx(SqlxError),
+    Pool(PoolError<SqlxError>),
+}
+
+impl Error for GetByIdError { }
+
+impl Display for GetByIdError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            GetByIdError::Sqlx(e) => write!(f, "Error running query: {}", e),
+            GetByIdError::Pool(e) => write!(f, "Error obtaining connection from pool: {}", e),
+        }
+    }
+}
+
+impl From<PoolError<SqlxError>> for GetByIdError {
+    fn from(value: PoolError<SqlxError>) -> Self {
+        GetByIdError::Pool(value)
+    }
+}
+
+impl From<SqlxError> for GetByIdError {
+    fn from(value: SqlxError) -> Self {
+        GetByIdError::Sqlx(value)
+    }
+}

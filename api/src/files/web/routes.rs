@@ -1,7 +1,8 @@
-use axum::{extract::{Multipart, Request}, http::{header::CONTENT_TYPE, StatusCode}, response::IntoResponse, Json, RequestExt};
+use axum::{extract::{Multipart, Path, Request}, http::{header::{CONTENT_DISPOSITION, CONTENT_TYPE}, HeaderMap, HeaderValue, StatusCode}, response::IntoResponse, Json, RequestExt};
+use bytes::Bytes;
 use file_format::FileFormat;
 use rand::distributions::{Alphanumeric, DistString};
-use crate::{axum::extractors::authenticate::AuthenticateExtractor, files::{axum::extractors::{metadata_repository::MetadataRepositoryExtractor, persistor::PersistorExtractor}, web::response::MetadataResponse}, util::or_status_code::{OrBadRequest, OrInternalServerError}};
+use crate::{axum::extractors::authenticate::AuthenticateExtractor, files::{axum::extractors::{metadata_repository::MetadataRepositoryExtractor, persistor::PersistorExtractor}, web::response::MetadataResponse}, util::or_status_code::{OrBadRequest, OrInternalServerError, OrNotFound}};
 use super::{request::ListMetadataRequest, response::{CreateFileResponse, ListMetadataResponse}};
 use crate::files::persist::Persistor;
 use crate::files::repository::metadata::MetadataRepository;
@@ -122,4 +123,31 @@ pub async fn list_metadata(
                 .collect()
         }
     ))
+}
+
+pub async fn get_by_id<'a>(
+    persistor: PersistorExtractor<'a>,
+    metadata_repository: MetadataRepositoryExtractor,
+    Path(id): Path<String>
+) -> Result<(HeaderMap, Bytes), StatusCode> {
+    let metadata = metadata_repository
+        .get_by_id(&id)
+        .await
+        .or_internal_server_error()?
+        .or_not_found()?;
+
+    let content = persistor
+        .read(&metadata.key)
+        .await
+        .or_internal_server_error()?;
+    
+    let content_type = HeaderValue::from_str(&metadata.mime).or_internal_server_error()?;
+    let content_disposition = HeaderValue::from_str(&format!("attachment; filename=\"{}\"", metadata.name)).or_internal_server_error()?;
+
+    let mut headers = HeaderMap::new();
+
+    headers.insert(CONTENT_TYPE, content_type);
+    headers.insert(CONTENT_DISPOSITION, content_disposition);
+
+    Ok((headers, content))
 }
