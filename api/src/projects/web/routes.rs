@@ -64,18 +64,15 @@ pub async fn list_projects(
         .await
         .or_internal_server_error()?;
 
-    let mut response_items = Vec::new();
-
-    for project in projects {
-        response_items.push(ProjectResponse {
-            id: project.id,
-            name: project.name,
-        })
-    }
-
     Ok(Json(
         ListProjectsResponse {
-            projects: response_items
+            projects: projects
+                .into_iter()
+                .map(|project| ProjectResponse {
+                    id: project.id,
+                    name: project.name,
+                })
+                .collect()
         }
     ))
 }
@@ -95,15 +92,12 @@ pub async fn list_project_files(
         .await
         .or_internal_server_error()?;
 
-    let mut file_ids = Vec::new();
-
-    for project_file in project_files {
-        file_ids.push(project_file.file_id);
-    }
-
     Ok(Json(
         ListProjectFilesResponse {
-            file_ids
+            file_ids: project_files
+                .into_iter()
+                .map(|project_file| project_file.file_id)
+                .collect()
         }
     ))
 }
