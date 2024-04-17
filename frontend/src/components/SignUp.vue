@@ -18,7 +18,7 @@
                     type="text" 
                     class="form-control bg-dark border-dark text-white" 
                     name="username" 
-                    v-modwel="username"
+                    v-model="username"
                 />
             </div>
 

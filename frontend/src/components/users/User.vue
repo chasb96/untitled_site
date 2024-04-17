@@ -18,7 +18,7 @@ export default {
         this.username = getUserResponseBody.username;
         this.userId = getUserResponseBody.id;
 
-        let getProjectsResponse = await fetch("/api/projects/users/" + this.userId);
+        let getProjectsResponse = await fetch("/api/projects?user_id=" + this.userId);
         let getProjectsResponseBody = await getProjectsResponse.json();
 
         this.projects = getProjectsResponseBody.projects;

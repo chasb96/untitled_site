@@ -10,33 +10,12 @@ spec:
   rules:
   - http:
       paths:
-      - path: /api/(sign_up)
+      - path: /api/(.*)
         pathType: Prefix
         backend:
           service:
-            name: auth-web
+            name: api
             port:
-              number: 80
-      - path: /api/(authenticate)
-        pathType: Prefix
-        backend:
-          service:
-            name: auth-web
-            port:
-              number: 80
-      - path: /api/projects/(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: projects-web
-            port: 
-              number: 80
-      - path: /api/users/(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: users-web
-            port: 
               number: 80
       - path: /(.*)
         pathType: Prefix

@@ -1,15 +1,9 @@
-use std::sync::OnceLock;
-use config::Config;
+use std::{env, sync::OnceLock};
 use serde::Deserialize;
 
 use crate::util::log_unwrap::LogUnwrap;
 
-static CONFIGURATION: OnceLock<ConfigWrapper> = OnceLock::new();
-
-#[derive(Deserialize)]
-struct ConfigWrapper {
-    jwt: Configuration,
-}
+static CONFIGURATION: OnceLock<Configuration> = OnceLock::new();
 
 #[derive(Deserialize)]
 pub struct Configuration {
@@ -20,15 +14,13 @@ impl Configuration {
     pub fn configured() -> &'static Self {
         let config = CONFIGURATION
             .get_or_init(|| {
-                Config::builder()
-                    .add_source(config::File::with_name("Config.yaml"))
-                    .add_source(config::Environment::with_prefix("JWT"))
-                    .build()
-                    .log_unwrap()
-                    .try_deserialize()
-                    .log_unwrap()
+                let hmac_key = env::var("JWT_HMAC_KEY").log_unwrap();
+
+                Configuration {
+                    hmac_key,
+                }
             });
 
-        &config.jwt
+        &config
     }
 }

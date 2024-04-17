@@ -24,6 +24,7 @@ RUN apt-get install -y libpq-dev
 
 WORKDIR /src
 
+COPY ./src/config.yaml ./config.yaml
 COPY --from=build_host /src/api/target/release/api ./api
 
 CMD ["./api"]

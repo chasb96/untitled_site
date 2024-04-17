@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: public.ecr.aws/l4v6k6q7/0bf0de84c3c818462fb872e32cd1471e_auth:latest
+        image: public.ecr.aws/l4v6k6q7/0bf0de84c3c818462fb872e32cd1471e_api:latest
         ports:
         - containerPort: 80
         env:
@@ -31,7 +31,7 @@ spec:
         - name: JWT_HMAC_KEY
           valueFrom: 
             secretKeyRef:
-              name: api-hmac-key
+              name: auth-hmac-key
               key: hmac_key
         - name: PROJECTS_DATABASE_URL
           valueFrom: 

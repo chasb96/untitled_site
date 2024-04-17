@@ -21,7 +21,7 @@ impl Configuration {
         let config = CONFIGURATION
             .get_or_init(|| {
                 Config::builder()
-                    .add_source(config::File::with_name("Config.yaml"))
+                    .add_source(config::File::with_name("config.yaml"))
                     .add_source(config::Environment::with_prefix("PROJECTS"))
                     .build()
                     .log_unwrap()
