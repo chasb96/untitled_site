@@ -15,8 +15,3 @@ pub struct ProjectResponse {
 pub struct ListProjectsResponse {
     pub projects: Vec<ProjectResponse>,
 }
-
-#[derive(Serialize)]
-pub struct ListProjectFilesResponse {
-    pub file_ids: Vec<String>,
-}

@@ -3,59 +3,30 @@ use deadpool::managed::PoolError;
 use sqlx::Error as SqlxError;
 
 #[derive(Debug)]
-pub enum CreateError {
+pub enum QueryError {
     Sqlx(SqlxError),
     Pool(PoolError<SqlxError>),
 }
 
-impl Error for CreateError { }
+impl Error for QueryError { }
 
-impl Display for CreateError {
+impl Display for QueryError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            CreateError::Sqlx(e) => write!(f, "Error running query: {}", e),
-            CreateError::Pool(e) => write!(f, "Error obtaining connection from pool: {}", e),
+            QueryError::Sqlx(e) => write!(f, "Error running query: {}", e),
+            QueryError::Pool(e) => write!(f, "Error obtaining connection from pool: {}", e),
         }
     }
 }
 
-impl From<PoolError<SqlxError>> for CreateError {
+impl From<PoolError<SqlxError>> for QueryError {
     fn from(value: PoolError<SqlxError>) -> Self {
-        CreateError::Pool(value)
+        QueryError::Pool(value)
     }
 }
 
-impl From<SqlxError> for CreateError {
+impl From<SqlxError> for QueryError {
     fn from(value: SqlxError) -> Self {
-        CreateError::Sqlx(value)
-    }
-}
-
-#[derive(Debug)]
-pub enum ListError {
-    Sqlx(SqlxError),
-    Pool(PoolError<SqlxError>),
-}
-
-impl Error for ListError { }
-
-impl Display for ListError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            ListError::Sqlx(e) => write!(f, "Error running query: {}", e),
-            ListError::Pool(e) => write!(f, "Error obtaining connection from pool: {}", e),
-        }
-    }
-}
-
-impl From<PoolError<SqlxError>> for ListError {
-    fn from(value: PoolError<SqlxError>) -> Self {
-        ListError::Pool(value)
-    }
-}
-
-impl From<SqlxError> for ListError {
-    fn from(value: SqlxError) -> Self {
-        ListError::Sqlx(value)
+        QueryError::Sqlx(value)
     }
 }
