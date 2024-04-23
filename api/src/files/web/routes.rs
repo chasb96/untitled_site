@@ -51,6 +51,13 @@ pub async fn create_file<'a>(
     mut request: Multipart
 ) -> Result<Json<CreateFileResponse>, StatusCode> {
     const UPLOAD_CAP: usize = 16;
+    const FILE_FORMAT_WHITELIST: &[FileFormat] = &[
+        FileFormat::StereolithographyAscii,
+        FileFormat::PortableNetworkGraphics,
+        FileFormat::PlainText,
+        FileFormat::PortableDocumentFormat,
+        FileFormat::JointPhotographicExpertsGroup,
+    ];
 
     let mut ids = Vec::new();
 
@@ -59,14 +66,8 @@ pub async fn create_file<'a>(
         let bytes = field.bytes().await.or_bad_request()?;
 
         let file_format = FileFormat::from_bytes(&bytes);
-        
-        if !matches!(file_format,
-            FileFormat::StereolithographyAscii |
-            FileFormat::PortableNetworkGraphics |
-            FileFormat::PlainText |
-            FileFormat::PortableDocumentFormat |
-            FileFormat::JointPhotographicExpertsGroup
-        ) {
+
+        if !FILE_FORMAT_WHITELIST.contains(&file_format) {
             return Err(StatusCode::BAD_REQUEST);
         }
 
