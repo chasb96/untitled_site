@@ -48,4 +48,9 @@ spec:
             secretKeyRef:
               name: files-database-connection-string
               key: database_url
-        
+        - name: FILES_PATH
+          value: /storage
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: storage-volume-claim
