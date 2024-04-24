@@ -48,7 +48,7 @@ export default {
                 })
             };
 
-            let response = await fetch('/api/projects/', request);
+            let response = await fetch('/api/projects', request);
 
             switch (response.status) {
                 case 401: this.show_invalid_credentials = true; break;

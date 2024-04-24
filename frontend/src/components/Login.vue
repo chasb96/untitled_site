@@ -31,7 +31,7 @@
             <hr class="border-dark opacity-100 mt-4" />
 
             <div class="float-end me-3">
-                <button type="button" class="btn btn-primary" @click.prevent="submit">Submit</button>
+                <button type="submit" class="btn btn-primary" @click.prevent="submit">Submit</button>
             </div>
             <div class="clearfix mb-3"></div>
         </form>
@@ -64,7 +64,7 @@ export default {
                 })
             };
 
-            let response = await fetch('/api/authenticate', request);
+            let response = await fetch('/api/login', request);
 
             switch (response.status) {
                 case 401: this.show_invalid_credentials = true; break;

@@ -15,7 +15,7 @@ pub async fn create_project(
     AuthenticateExtractor(user): AuthenticateExtractor,
     project_repository: ProjectRepositoryExtractor,
     Json(request): Json<CreateProjectRequest>
-) -> Result<Json<CreateProjectResponse>, StatusCode> {
+) -> Result<(StatusCode, Json<CreateProjectResponse>), StatusCode> {
     let id = Alphanumeric.sample_string(&mut rand::thread_rng(), 16);
     
     let id = project_repository
@@ -23,10 +23,13 @@ pub async fn create_project(
         .await
         .or_internal_server_error()?;
 
-    Ok(Json(
-        CreateProjectResponse {
-            id,
-        }
+    Ok((
+        StatusCode::CREATED,
+        Json(
+            CreateProjectResponse {
+                id,
+            }
+        )
     ))
 }
 

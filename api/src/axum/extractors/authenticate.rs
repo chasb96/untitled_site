@@ -26,7 +26,7 @@ impl<T> FromRequestParts<T> for AuthenticateExtractor {
             .split_once(' ')
             .or_status_code(StatusCode::BAD_REQUEST)?;
 
-        match (scheme.as_ref(), authentication) {
+        match (scheme.to_ascii_uppercase().as_ref(), authentication) {
             ("BEARER", token) => 
                 verify_jwt(token.to_string())
                     .map(|user| AuthenticateExtractor(user))
