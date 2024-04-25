@@ -9,6 +9,7 @@ pub struct CreateProjectResponse {
 pub struct ProjectResponse {
     pub id: String,
     pub name: String,
+    pub user_id: i32,
 }
 
 #[derive(Serialize)]

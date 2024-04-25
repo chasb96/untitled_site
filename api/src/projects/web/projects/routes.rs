@@ -47,6 +47,7 @@ pub async fn get_project_by_id(
         ProjectResponse {
             id: project.id,
             name: project.name,
+            user_id: project.user_id,
         }
     ))
 }
@@ -71,6 +72,7 @@ pub async fn list_projects(
             .map(|project| ProjectResponse {
                 id: project.id,
                 name: project.name,
+                user_id: project.user_id,
             })
             .collect()
     };
