@@ -19,28 +19,26 @@ pub async fn post_files<'a>(
         .and_then(|content_type| content_type.to_str().ok())
         .or_bad_request()?;
 
-    match content_type {
-        "application/json" => {
-            let json = request
-                .extract()
-                .await
-                .or_internal_server_error()?;
+    if content_type == "application/json" {
+        let json = request
+            .extract()
+            .await
+            .or_internal_server_error()?;
+    
+        list_metadata(metadata_repository, json)
+            .await
+            .map(|json| json.into_response())
+    } else if content_type.starts_with("multipart/form-data") {
+        let multipart = request
+            .extract()
+            .await
+            .or_internal_server_error()?;
 
-            list_metadata(metadata_repository, json)
-                .await
-                .map(|json| json.into_response())
-        },
-        "multipart/form-data" => {
-            let multipart = request
-                .extract()
-                .await
-                .or_internal_server_error()?;
-
-            create_file(authenticate_extractor, persistor, metadata_repository, multipart)
-                .await
-                .map(|json| json.into_response())
-        },
-        _ => Err(StatusCode::BAD_REQUEST),
+        create_file(authenticate_extractor, persistor, metadata_repository, multipart)
+            .await
+            .map(|json| json.into_response())
+    } else {
+        Err(StatusCode::BAD_REQUEST)
     }
 }
 

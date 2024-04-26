@@ -10,7 +10,7 @@ async fn main()  -> Result<(), Box<dyn Error>> {
     env_logger::init();
 
     info!("Binding to 0.0.0.0:80");
-    let listener = TcpListener::bind("0.0.0.0:80").await?;
+    let listener = TcpListener::bind("0.0.0.0:8080").await?;
 
     info!("Serving traffic");
     serve(listener, create_api_router()).await?;

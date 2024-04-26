@@ -48,6 +48,8 @@ spec:
             secretKeyRef:
               name: files-database-connection-string
               key: database_url
+        - name: FILES_DRIVER
+          value: disk
         - name: FILES_PATH
           value: /storage
       volumes:

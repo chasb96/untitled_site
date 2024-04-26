@@ -16,7 +16,7 @@ impl<'a> DiskDrive<'a> {
 
 impl<'a> Persistor for DiskDrive<'a> {
     async fn persist(&self, key: &str, bytes: Bytes) -> Result<(), super::error::PersistError> {
-        let mut file = File::open(format!("{}/{}", self.root, key))?;
+        let mut file = File::create(format!("{}/{}", self.root, key))?;
 
         file.write_all(&bytes)?;
 
