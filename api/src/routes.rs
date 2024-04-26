@@ -26,4 +26,5 @@ pub fn create_api_router() -> Router {
         .register_user_routes()
         .register_files_routes()
         .register_api_layers()
+        .register_files_layers()
 }
