@@ -35,3 +35,9 @@ export default {
         </div>
     </nav>
 </template>
+
+<style>
+.navbar {
+    padding: 0;
+}
+</style>
