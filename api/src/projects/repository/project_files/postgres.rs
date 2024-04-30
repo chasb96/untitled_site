@@ -59,7 +59,7 @@ impl ProjectFilesRepository for PostgresDatabase {
     
     async fn add_range(&self, project_id: &str, file_ids: Vec<String>) -> Result<(), QueryError> {
         const ADD_RANGE_QUERY: &'static str = r#"
-            INSERT INTO project_files
+            INSERT INTO project_files (project_id, file_id)
             SELECT $1, file_id
             FROM UNNEST($2) AS file_ids(file_id)
         "#;

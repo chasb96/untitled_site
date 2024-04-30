@@ -2,5 +2,5 @@ use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct ListMetadataRequest {
-    pub keys: Vec<String>,
+    pub ids: Vec<String>,
 }

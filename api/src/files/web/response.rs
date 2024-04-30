@@ -7,6 +7,7 @@ pub struct CreateFileResponse {
 
 #[derive(Serialize)]
 pub struct MetadataResponse {
+    pub id: String,
     pub name: String,
     pub user_id: i32,
 }

@@ -27,7 +27,7 @@ impl MetadataRepository for PostgresDatabase {
             .map_err(Into::into)
     }
     
-    async fn list(&self, keys: Vec<String>) -> Result<Vec<Metadata>, ListError> {
+    async fn list(&self, ids: Vec<String>) -> Result<Vec<Metadata>, ListError> {
         const LIST_QUERY: &'static str = r#"
             SELECT
                 id,
@@ -38,7 +38,10 @@ impl MetadataRepository for PostgresDatabase {
             FROM
                 metadata
             WHERE
-                key IN ($1)
+                id IN (
+                    SELECT id
+                    FROM UNNEST($1) AS ids(id)
+                )
         "#;
 
         let mut conn = self.connection_pool
@@ -46,7 +49,7 @@ impl MetadataRepository for PostgresDatabase {
             .await?;
 
         sqlx::query(LIST_QUERY)
-            .bind(keys)
+            .bind(ids)
             .map(Into::into)
             .fetch_all(conn.as_mut())
             .await

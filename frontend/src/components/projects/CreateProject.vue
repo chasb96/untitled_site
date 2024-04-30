@@ -51,7 +51,6 @@ export default {
             let response = await fetch('/api/projects', request);
 
             switch (response.status) {
-                case 401: this.show_invalid_credentials = true; break;
                 case 500: this.$router.push('/internal_server_error'); break;
                 case 201: {
                     let responseBody = await response.json();

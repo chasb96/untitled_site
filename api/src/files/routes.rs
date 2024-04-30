@@ -14,6 +14,6 @@ impl FilesRouter for Router {
     }
     
     fn register_files_layers(self) -> Self {
-        self.layer(DefaultBodyLimit::max(10240))
+        self.layer(DefaultBodyLimit::max(16777216))
     }
 }

@@ -24,6 +24,22 @@ export default {
 
         let getProjectFilesResponse = await fetch("/api/projects/" + this.id + "/files");
         let getProjectFilesResponseBody = await getProjectFilesResponse.json();
+
+        let getFilesRequest = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + new AuthService().getToken(),
+            },
+            body: JSON.stringify({
+                ids: getProjectFilesResponseBody.file_ids
+            })
+        };
+
+        let getFilesResponse = await fetch('/api/files', getFilesRequest);
+        let getFilesResponseBody = await getFilesResponse.json();
+
+        this.files = getFilesResponseBody.files;
     }
 }
 </script>
@@ -45,9 +61,15 @@ export default {
         </div>
 
         <div class="container-fluid border-top border-dark">
-            <ul class="list-group">
-                <li v-for="(file, i) in files" class="list-group-item">
-                    {{ file.name }}
+            <ul class="list-group mt-3 mb-3">
+                <li v-for="(file, i) in files" class="list-group-item border-dark d-flex p-0">
+                    <div class="flex-grow-1 p-2">
+                        <a class="text-light text-decoration-none" v-bind:href="'/api/files/' + file.id">{{ file.name }}</a>
+                    </div>
+
+                    <a v-bind:href="'/api/files/' + file.id">
+                        <button class="btn btn-sm btn-primary rounded-0 rounded-end-1 m-1">Download</button>
+                    </a>
                 </li>
             </ul>
         </div>

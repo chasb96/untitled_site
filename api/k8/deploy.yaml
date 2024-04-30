@@ -52,6 +52,9 @@ spec:
           value: disk
         - name: FILES_PATH
           value: /storage
+        volumeMounts:
+        - name: storage
+          mountPath: /storage
       volumes:
         - name: storage
           persistentVolumeClaim:

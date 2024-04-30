@@ -102,12 +102,12 @@ pub async fn list_metadata(
 ) -> Result<Json<ListMetadataResponse>, StatusCode> {
     const LIST_CAP: usize = 256;
 
-    if request.keys.len() > LIST_CAP {
+    if request.ids.len() > LIST_CAP {
         return Err(StatusCode::BAD_REQUEST);
     }
 
     let metadata = metadata_repository
-        .list(request.keys)
+        .list(request.ids)
         .await
         .or_internal_server_error()?;
 
@@ -116,6 +116,7 @@ pub async fn list_metadata(
             files: metadata
                 .iter()
                 .map(|metadata| MetadataResponse {
+                    id: metadata.id.to_owned(),
                     name: metadata.name.to_owned(),
                     user_id: metadata.user_id,
                 })
