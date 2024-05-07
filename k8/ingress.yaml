@@ -25,6 +25,13 @@ spec:
             name: projects
             port:
               number: 80
+      - path: /api/(users.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: users
+            port:
+              number: 80
       - path: /api/(.*)
         pathType: Prefix
         backend:
