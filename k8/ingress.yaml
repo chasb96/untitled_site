@@ -11,6 +11,20 @@ spec:
   rules:
   - http:
       paths:
+      - path: /api/(sign_up|login)
+        pathType: Prefix
+        backend:
+          service:
+            name: auth
+            port:
+              number: 80
+      - path: /api/(projects.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: projects
+            port:
+              number: 80
       - path: /api/(.*)
         pathType: Prefix
         backend:
