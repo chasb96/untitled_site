@@ -32,11 +32,11 @@ spec:
             name: users
             port:
               number: 80
-      - path: /api/(.*)
+      - path: /api/(files.*)
         pathType: Prefix
         backend:
           service:
-            name: api
+            name: files
             port:
               number: 80
       - path: /(.*)
